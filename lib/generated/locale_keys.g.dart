@@ -21,4 +21,6 @@ abstract class  LocaleKeys {
   static const close = 'close';
   static const change_language = 'change_language';
   static const change_theme = 'change_theme';
+  static const places_details = 'places_details';
+
 }

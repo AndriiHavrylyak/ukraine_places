@@ -3,6 +3,8 @@ import 'package:dartz/dartz.dart';
 import '../../data/models/error/app_error.dart';
 import '../../data/models/error/response_error.dart';
 
+
+
 class Result<Data> {
   late Either<AppError, Data> _data;
 
@@ -11,20 +13,11 @@ class Result<Data> {
   }
 
   Result(Either<DataFailure, Data> response) {
-    response.fold(
-      (error) => _data = Left(
-        _handleLeft(
-          error,
-        ),
-      ),
-      (result) => _data = Right(
-        result,
-      ),
-    );
+    response.fold((l) => _data = Left(_handleLeft(l)), (r) => _data = Right(r));
   }
 
-  //common logics for managing errors
   AppError _handleLeft(DataFailure error) {
+    //TODO
     late String message;
     if (error is ResponseError) {
       message = error.getErrorMessage();

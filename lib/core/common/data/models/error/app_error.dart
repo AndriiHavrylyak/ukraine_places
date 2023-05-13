@@ -1,11 +1,11 @@
+
 import 'failure.dart';
 
 class AppError extends Failure {
+  final String message;
 
-  const AppError(String message) : super(message);
+  AppError(this.message);
 
   @override
-  List<Object?> get props => [
-        message,
-      ];
+  List<Object?> get props => [message];
 }

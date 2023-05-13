@@ -1,15 +1,19 @@
 import 'package:dio/dio.dart';
 
+import '../../../../constants/system_messages.dart';
 import 'failure.dart';
 
 abstract class DataFailure extends Failure {
-  const DataFailure(String message) : super(message);
+  @override
+  List<Object?> get props => [];
 }
 
 class LocalError extends DataFailure {
-  const LocalError(String message) : super(message);
+  final String message;
 
-  getMessage() {
+  LocalError(this.message);
+
+  String getMessage() {
     return message;
   }
 
@@ -17,53 +21,65 @@ class LocalError extends DataFailure {
   List<Object?> get props => [message];
 }
 
-class CacheError extends LocalError {
-  const CacheError(String message) : super(message);
+class CacheError extends DataFailure {
+  final String message;
+
+  CacheError(this.message);
 
   @override
   List<Object?> get props => [];
 }
 
+// ignore: must_be_immutable
 class ResponseError extends DataFailure {
-  int _errorCode = 0;
+  late int _errorCode = 0;
+  late String _message = "";
 
-  ResponseError(String message, this._errorCode ) : super(message);
+  ResponseError.withError({required DioError error}) {
+    _handleError(error);
+  }
 
-  getErrorCode() {
+  ResponseError.by({required String message, int code = 0}) {
+    _errorCode = code;
+    _message = message;
+  }
+
+  int getErrorCode() {
     return _errorCode;
   }
 
-  getErrorMessage() {
-    return message;
+  String getErrorMessage() {
+    return _message;
   }
 
-  // ignore: unused_element
-  // for future needs
-  _handleError(DioError error) {
+  String _handleError(DioError error) {
     var code = error.response?.statusCode;
     code ??= 0;
     _errorCode = code;
 
     switch (error.type) {
       case DioErrorType.cancel:
+        _message = AppMessage.requestCanceled;
         break;
       case DioErrorType.connectTimeout:
+        _message = AppMessage.connectionTimeOut;
         break;
       case DioErrorType.other:
+        _message = error.message;
         break;
       case DioErrorType.receiveTimeout:
+        _message = AppMessage.connectionTimeOut;
         break;
       case DioErrorType.response:
+        _message = "${error.message} + : $_errorCode";
         break;
       case DioErrorType.sendTimeout:
+        _message = AppMessage.requestTimeOut;
         break;
     }
-    return message;
+    return _message;
   }
 
   @override
-  List<Object> get props => [
-        message,
-        _errorCode,
-      ];
+  List<Object> get props => [_message, _errorCode];
 }

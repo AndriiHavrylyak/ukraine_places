@@ -14,7 +14,7 @@ class CoreModule extends Module {
 
   CoreModule._internal();
 
-  static Dio dioInstance() {
+  static Dio get dioInstance {
     var dio = Dio(BaseOptions(
       receiveDataWhenStatusError: true,
       connectTimeout: 30 * 1000,
@@ -23,6 +23,7 @@ class CoreModule extends Module {
       // 30 seconds
       sendTimeout: 30 * 1000,
       // 30 seconds
+      baseUrl: env.baseUrl,
     ));
 
     dio.interceptors.add(PrettyDioLogger(
@@ -43,8 +44,6 @@ class CoreModule extends Module {
           (i) => SharedPreferences.getInstance(),
           export: true,
         ),
-        Bind.singleton((userSessionLocalDataSource) => dioInstance(),
-            export: true),
-
+        Bind.singleton((_) => dioInstance, export: true),
       ];
 }

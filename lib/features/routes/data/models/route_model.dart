@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../../../places/data/models/places_model.dart';
+import '../../../places/data/models/response/get_places_model_response.dart';
 
 part 'route_model.freezed.dart';
 

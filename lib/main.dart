@@ -6,17 +6,20 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:ukraine_places/generated/codegen_loader.g.dart';
 import 'core/config/build_environment.dart';
 import 'core/constants/routes.dart';
+import 'core/constants/urls.dart';
 import 'features/app/app_module.dart';
 import 'features/app/app_widget.dart';
 
 void main() async {
   BuildEnvironment.init(
     flavor: BuildFlavor.development,
+    baseUrl: Urls.base,
+    places: Urls.places,
+    profile: Urls.profile,
   );
 
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  await Firebase.initializeApp();
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((_) {

@@ -1,167 +1,130 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
+import 'package:flutter_modular/flutter_modular.dart';
+import 'package:ukraine_places/features/places/data/models/places_model.dart';
 
 import '../../../../core/config/colorz.dart';
 import '../../../../core/config/dimens.dart';
-
-import '../../data/models/places_list_with_key.dart';
-import '../../data/models/places_model.dart';
+import '../../../../core/constants/routes.dart';
+import '../../../../generated/locale_keys.g.dart';
 import '../managers/places_bloc.dart';
 
-class PlacesWidget extends StatefulWidget {
-  const PlacesWidget({Key? key}) : super(key: key);
-
-  @override
-  PlacesWidgetState createState() => PlacesWidgetState();
-}
-
-class PlacesWidgetState extends State<PlacesWidget> {
-  final _pagingController = PagingController<int, PlacesModelWithKey>(
-    firstPageKey: 0,
-  );
-  final _bloc = PlacesBloc();
-  final int _pageSize = 20;
-
-  @override
-  void initState() {
-    super.initState();
-    _pagingController.addPageRequestListener((pageKey) {
-      PlacesModelWithKey? lastPlacesWithKey;
-      if (pageKey != 0) {
-        lastPlacesWithKey = _pagingController.itemList!.last;
-      }
-      _bloc.add(PlacesInitEvent(
-          pageKey: pageKey == 0 ? null : _pagingController.itemList!.last.key));
-    });
-  }
-
-  @override
-  void dispose() {
-    _pagingController.dispose();
-    _bloc.close();
-    super.dispose();
-  }
-
-  Future<void> _refreshNews() async {
-    _pagingController.refresh();
-  }
+class PlacesWidget extends StatelessWidget {
+  const PlacesWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: BlocListener<PlacesBloc, PlacesState>(
-        bloc: _bloc,
-        listener: (context, state) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(LocaleKeys.places.tr()),
+      ),
+      body: BlocBuilder<PlacesBloc, PlacesState>(
+        builder: (context, state) {
           if (state.isProgress) {
-            return;
+            return const CircularProgressIndicator();
           }
-          final isLastPage = state.placesList.length < _pageSize;
-          if (isLastPage) {
-            _pagingController.appendLastPage(state.placesList);
-          } else {
-            final nextPageKey = _pagingController.nextPageKey! + _pageSize;
-            _pagingController.appendPage(state.placesList, nextPageKey);
-          }
+          return ListView.builder(
+            padding: EdgeInsets.zero,
+            primary: false,
+            shrinkWrap: true,
+            itemCount: state.placesList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return _buildTile(
+                context: context,
+                placesModel: state.placesList[index],
+              );
+            },
+          );
         },
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: RefreshIndicator(
-            onRefresh: _refreshNews,
-            child: PagedListView<int, PlacesModelWithKey>(
-              pagingController: _pagingController,
-              builderDelegate: PagedChildBuilderDelegate<PlacesModelWithKey>(
-                itemBuilder: (context, placesWithKey, index) =>
-                    _placesWidget(placesModel: placesWithKey.placesModel),
-                firstPageErrorIndicatorBuilder: (context) => const Center(
-                  child: Text('Error loading places, please try again.'),
-                ),
-                noItemsFoundIndicatorBuilder: (context) => const Center(
-                  child: Text('No places found.'),
-                ),
-                newPageErrorIndicatorBuilder: (context) => const Center(
-                  child: Text('Error loading more places, please try again.'),
-                ),
-                newPageProgressIndicatorBuilder: (context) => const Center(
-                  child: CircularProgressIndicator(),
-                ),
+      ),
+    );
+  }
+
+  Widget _buildTile({
+    required BuildContext context,
+    required PlacesModel placesModel,
+  }) {
+    return Padding(
+      padding: const EdgeInsets.all(Margins.little),
+      child: Card(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(Margins.little),
+              child: Image.network(placesModel.images),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(Margins.medium),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    placesModel.name,
+                    style: const TextStyle(
+                        fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: Margins.small),
+                  Text(
+                    placesModel.shortDescription,
+                    style: const TextStyle(fontSize: 16),
+                  ),
+                  const SizedBox(height: Margins.small),
+                  Text(
+                    '${placesModel.location.region}, ${placesModel.location.settlement}',
+                    style: const TextStyle(
+                        fontSize: 16, fontStyle: FontStyle.italic),
+                  ),
+                  const SizedBox(height: Margins.medium),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            Modular.to.pushNamed(
+                                ModuleRoutes.base +
+                                    ModuleRoutes.placeDetails,
+                                arguments: placesModel);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            onPrimary: Colorz.primary,
+                          ),
+                          icon: const Icon(Icons.info_outline),
+                          label: const Text(
+                            'Детальніше',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: Margins.tiny),
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          onPressed: () {
+                            // Дії для планування маршруту
+                          },
+                          style: ElevatedButton.styleFrom(
+                            primary: Colors.white,
+                            onPrimary: Colorz.primary,
+                          ),
+                          icon: const Icon(Icons.map),
+                          label: const Text(
+                            'Планувати маршрут',
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
+                ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );
   }
-}
-
-Widget _placesWidget({
-  required PlacesModel placesModel,
-}) {
-  return Padding(
-    padding: const EdgeInsets.all(Margins.little),
-    child: Card(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(Margins.medium),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  placesModel.name,
-                  style: const TextStyle(
-                      fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: Margins.small),
-                Text(
-                  placesModel.shortDescription,
-                  style: const TextStyle(fontSize: 16),
-                ),
-                const SizedBox(height: Margins.small),
-                const SizedBox(height: Margins.medium),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {},
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colorz.primary,
-                        ),
-                        icon: const Icon(Icons.info_outline),
-                        label: const Text(
-                          'Детальніше',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: Margins.tiny),
-                    Expanded(
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-// Дії для планування маршруту
-                        },
-                        style: ElevatedButton.styleFrom(
-                          primary: Colors.white,
-                          onPrimary: Colorz.primary,
-                        ),
-                        icon: const Icon(Icons.map),
-                        label: const Text(
-                          'Планувати маршрут',
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    ),
-  );
 }

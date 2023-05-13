@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:ukraine_places/features/base/presentation/pages/general_page.dart';
+import 'package:ukraine_places/features/place_details/places_details_modul.dart';
 import 'package:ukraine_places/features/places/places_module.dart';
 import 'package:ukraine_places/features/profile/profile_module.dart';
 
@@ -66,6 +67,11 @@ class BaseModule extends Module {
       ModuleRoutes.profileSettings,
       transition: TransitionType.fadeIn,
       module: ProfileSettingsModule(),
+    ),
+    ModuleRoute(
+      ModuleRoutes.placeDetails,
+      transition: TransitionType.fadeIn,
+      module: PlaceDetailsModule(),
     ),
   ];
 }

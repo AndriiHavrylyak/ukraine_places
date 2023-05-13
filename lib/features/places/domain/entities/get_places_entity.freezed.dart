@@ -16,8 +16,7 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$GetPlacesEntity {
-  Iterable<PlacesModelWithKey>? get places =>
-      throw _privateConstructorUsedError;
+  GetPlacesModelResponse get places => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GetPlacesEntityCopyWith<GetPlacesEntity> get copyWith =>
@@ -30,7 +29,9 @@ abstract class $GetPlacesEntityCopyWith<$Res> {
           GetPlacesEntity value, $Res Function(GetPlacesEntity) then) =
       _$GetPlacesEntityCopyWithImpl<$Res, GetPlacesEntity>;
   @useResult
-  $Res call({Iterable<PlacesModelWithKey>? places});
+  $Res call({GetPlacesModelResponse places});
+
+  $GetPlacesModelResponseCopyWith<$Res> get places;
 }
 
 /// @nodoc
@@ -46,14 +47,22 @@ class _$GetPlacesEntityCopyWithImpl<$Res, $Val extends GetPlacesEntity>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? places = freezed,
+    Object? places = null,
   }) {
     return _then(_value.copyWith(
-      places: freezed == places
+      places: null == places
           ? _value.places
           : places // ignore: cast_nullable_to_non_nullable
-              as Iterable<PlacesModelWithKey>?,
+              as GetPlacesModelResponse,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $GetPlacesModelResponseCopyWith<$Res> get places {
+    return $GetPlacesModelResponseCopyWith<$Res>(_value.places, (value) {
+      return _then(_value.copyWith(places: value) as $Val);
+    });
   }
 }
 
@@ -65,7 +74,10 @@ abstract class _$$_GetPlacesEntityCopyWith<$Res>
       __$$_GetPlacesEntityCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Iterable<PlacesModelWithKey>? places});
+  $Res call({GetPlacesModelResponse places});
+
+  @override
+  $GetPlacesModelResponseCopyWith<$Res> get places;
 }
 
 /// @nodoc
@@ -79,13 +91,13 @@ class __$$_GetPlacesEntityCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? places = freezed,
+    Object? places = null,
   }) {
     return _then(_$_GetPlacesEntity(
-      places: freezed == places
+      places: null == places
           ? _value.places
           : places // ignore: cast_nullable_to_non_nullable
-              as Iterable<PlacesModelWithKey>?,
+              as GetPlacesModelResponse,
     ));
   }
 }
@@ -97,7 +109,7 @@ class _$_GetPlacesEntity extends _GetPlacesEntity with DiagnosticableTreeMixin {
   const _$_GetPlacesEntity({required this.places}) : super._();
 
   @override
-  final Iterable<PlacesModelWithKey>? places;
+  final GetPlacesModelResponse places;
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
@@ -117,12 +129,11 @@ class _$_GetPlacesEntity extends _GetPlacesEntity with DiagnosticableTreeMixin {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_GetPlacesEntity &&
-            const DeepCollectionEquality().equals(other.places, places));
+            (identical(other.places, places) || other.places == places));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(places));
+  int get hashCode => Object.hash(runtimeType, places);
 
   @JsonKey(ignore: true)
   @override
@@ -133,12 +144,11 @@ class _$_GetPlacesEntity extends _GetPlacesEntity with DiagnosticableTreeMixin {
 
 abstract class _GetPlacesEntity extends GetPlacesEntity {
   const factory _GetPlacesEntity(
-          {required final Iterable<PlacesModelWithKey>? places}) =
-      _$_GetPlacesEntity;
+      {required final GetPlacesModelResponse places}) = _$_GetPlacesEntity;
   const _GetPlacesEntity._() : super._();
 
   @override
-  Iterable<PlacesModelWithKey>? get places;
+  GetPlacesModelResponse get places;
   @override
   @JsonKey(ignore: true)
   _$$_GetPlacesEntityCopyWith<_$_GetPlacesEntity> get copyWith =>

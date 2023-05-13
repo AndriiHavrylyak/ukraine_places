@@ -1,7 +1,7 @@
 part of 'places_bloc.dart';
 
 class PlacesState extends Equatable {
-  final List<PlacesModelWithKey> placesList;
+  final List<PlacesModel> placesList;
   final bool isProgress;
 
   const PlacesState({
@@ -10,7 +10,7 @@ class PlacesState extends Equatable {
   });
 
   PlacesState copyWith({
-    List<PlacesModelWithKey>? placesList,
+    List<PlacesModel>? placesList,
     bool? isProgress,
   }) {
     return PlacesState(
@@ -20,5 +20,8 @@ class PlacesState extends Equatable {
   }
 
   @override
-  List<Object?> get props => [placesList, isProgress];
+  List<Object?> get props => [
+        placesList,
+        isProgress,
+      ];
 }

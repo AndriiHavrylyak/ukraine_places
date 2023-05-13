@@ -13,4 +13,5 @@ class ModuleRoutes {
   static const String personalData = '/personal_data';
   static const String splash = '/splash';
   static const String routes = '/routes';
+  static const String placeDetails = '/place_details';
 }

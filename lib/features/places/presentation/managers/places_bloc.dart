@@ -4,8 +4,8 @@ import 'package:equatable/equatable.dart';
 
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:ukraine_places/core/utils/extensions/bloc_extensions.dart';
+import 'package:ukraine_places/features/places/data/models/places_model.dart';
 
-import '../../data/models/places_list_with_key.dart';
 import '../../domain/use_cases/get_places.dart';
 
 part 'places_event.dart';
@@ -13,7 +13,6 @@ part 'places_event.dart';
 part 'places_state.dart';
 
 class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
-  static const int _pageSize = 20;
   final _getPlaces = Modular.get<GetPlaces>();
 
   PlacesBloc() : super(const PlacesState()) {
@@ -24,18 +23,15 @@ class PlacesBloc extends Bloc<PlacesEvent, PlacesState> {
 
   Future<void> getPlaces(
       PlacesInitEvent event, Emitter<PlacesState> emit) async {
-
-    var getPlacesResult = await _getPlaces(
-        GetPlacesParams(pageKey: event.pageKey, pageSize: _pageSize));
+    var getPlacesResult =
+        await _getPlaces(const GetPlacesParams(region: 'all'));
     await getPlacesResult.getData().fold((e) {
       emit(const PlacesState(isProgress: false));
+      emit(state.copyWith(isProgress: false));
       logError(e);
     }, (placesEntity) async {
-      var placesList = placesEntity.places;
-      emit(PlacesState(
-        placesList: placesList!.toList(),
-        isProgress: false,
-      ));
+      emit(state.copyWith(
+          isProgress: false, placesList: placesEntity.places.places));
     });
   }
 }

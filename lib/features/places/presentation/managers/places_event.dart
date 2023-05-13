@@ -5,12 +5,9 @@ abstract class PlacesEvent extends Equatable {
 }
 
 class PlacesInitEvent extends PlacesEvent {
-  final String? pageKey;
-
-  const PlacesInitEvent({required this.pageKey});
-
   @override
-  List<Object?> get props => [pageKey];
+
+  List<Object?> get props => [];
 }
 
 class NewsSearchEvent extends PlacesEvent {

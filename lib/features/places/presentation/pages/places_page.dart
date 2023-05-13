@@ -12,7 +12,7 @@ class  PlacesPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<PlacesBloc>(
       create: (context) =>
-          Modular.get<PlacesBloc>()..add(const PlacesInitEvent(pageKey: '1')),
+          Modular.get<PlacesBloc>()..add(PlacesInitEvent()),
       child: const PlacesWidget(),
     );
   }

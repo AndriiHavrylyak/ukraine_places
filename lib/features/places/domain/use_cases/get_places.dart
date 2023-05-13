@@ -1,42 +1,30 @@
-import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
-
 
 import '../../../../core/common/domain/entities/result.dart';
 import '../../../../core/common/domain/use_cases/usecase.dart';
-import '../../data/data_sources/remote/places_datasource.dart';
 import '../entities/get_places_entity.dart';
-
+import '../repositories/places_repository.dart';
 
 class GetPlaces extends UseCase<GetPlacesEntity, GetPlacesParams> {
-  final PlacesDataSource placesDataSource;
+  final PlacesRepository placesRepository;
 
-  GetPlaces(this.placesDataSource);
+  GetPlaces(this.placesRepository);
 
   @override
   Future<Result<GetPlacesEntity>> call(params) async {
-    return Future.value(
-      Result(
-        Right(
-          await placesDataSource.getPlaces(params),
-        ),
-      ),
-    );
+    return Result(await placesRepository.getPlaces(params));
   }
 }
 
 class GetPlacesParams extends Equatable {
-  final String? pageKey;
-  final int pageSize;
+  final String region;
 
   const GetPlacesParams({
-    required this.pageKey,
-    required this.pageSize,
+    required this.region,
   });
 
   @override
   List<Object?> get props => [
-        pageKey,
-        pageSize,
+        region,
       ];
 }
